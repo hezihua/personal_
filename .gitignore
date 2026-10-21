@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.aqg/
+package-lock.json
+npm-debug.log*
