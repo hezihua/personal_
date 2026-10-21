@@ -17,8 +17,9 @@ async function main() {
     const gateway = createHarnessGateway({ cwd, harness });
     await gateway.listen(host, port);
     console.log(`Harness Gateway http://${host}:${port}`);
+    console.log("  POST /channels/feishu     飞书事件订阅");
     console.log("  GET  /health /status /tools /mcp/servers /approvals /tasks/:id");
-    console.log("  POST /tasks  /approvals/:id  { \"action\": \"approve\"|\"deny\" }");
+    console.log("  POST /approvals/:id       { \"action\": \"approve\"|\"deny\" }");
     return;
   }
 
@@ -60,18 +61,14 @@ async function main() {
     return;
   }
 
-  console.log(`个人助手 Harness（Pi 底座）
+  console.log(`个人助手 Harness（Pi + 飞书）
 
 命令:
-  pnpm harness status                    查看 Skills / MCP / 工具 / 模型路由
-  pnpm harness run <任务>                CLI 审批 + Pi 执行任务
-  pnpm gateway [port]                    启动 HTTP 网关（默认 8787）
+  pnpm gateway [port]      启动网关（飞书回调入口）
+  pnpm harness status      查看 Skills / MCP / 工具
+  pnpm harness run <任务>  本机 CLI 调试（非飞书通道）
 
-环境变量:
-  HARNESS_AUTO_APPROVE=1                 非交互模式下自动批准 ask
-  HARNESS_PORT / HARNESS_HOST            网关监听地址
-
-架构模块: Task / Context / Skill / Tool+MCP / Model / Policy / Sandbox / Approval
+飞书环境变量见 config/assistant.example.env
 `);
 }
 

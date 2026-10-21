@@ -16,9 +16,12 @@ export interface ApprovalRequest {
 
 export type ApprovalPrompt = (request: ApprovalRequest) => Promise<boolean>;
 
+export type ApprovalPendingListener = (request: ApprovalRequest) => void;
+
 export class ApprovalRuntime {
   private pending = new Map<string, ApprovalRequest>();
   private waiters = new Map<string, { resolve: (approved: boolean) => void }>();
+  private onPending?: ApprovalPendingListener;
 
   constructor(
     private readonly audit: (entry: AuditEntry) => void,
@@ -28,6 +31,10 @@ export class ApprovalRuntime {
 
   setPrompt(prompt: ApprovalPrompt | undefined): void {
     this.prompt = prompt;
+  }
+
+  setOnPending(listener: ApprovalPendingListener | undefined): void {
+    this.onPending = listener;
   }
 
   listPending(): ApprovalRequest[] {
@@ -62,6 +69,7 @@ export class ApprovalRuntime {
       message: "等待用户审批工具调用",
       detail: { approvalId: request.id, toolName: input.toolName },
     });
+    this.onPending?.(request);
 
     if (this.prompt) {
       const approved = await this.prompt(request);

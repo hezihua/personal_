@@ -13,7 +13,7 @@ export function createCliApprovalPrompt(options?: {
     }
     if (!input.isTTY) {
       console.error(
-        `[Harness] 工具 ${request.toolName} 需审批但非交互终端。设置 ${envKey}=1 或改用 HTTP POST /approvals/:id`,
+        `[Harness] 工具 ${request.toolName} 需审批但非交互终端。设置 ${envKey}=1，或在飞书回复「批准 <id>」`,
       );
       return false;
     }
